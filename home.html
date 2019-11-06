@@ -1,0 +1,209 @@
+<!--Science Project Area-->
+<script type="text/javascript" src="js/index.js"></script>
+
+<div class="jumbotron bg-dark">
+    <script>
+        var counter = 0;
+    </script>
+    <div class="text-center">
+        <form id="main-form">
+            <div class="form-group">
+                <textarea type="text" rows="5" placeholder="Describe your idea" class="form-control" id="main-desc"></textarea>
+                <div class="invalid-feedback">
+                    Please write some description first.
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="file" class="form-control" id="main-image" style="width: 100%" ;/>
+                <div class="invalid-feedback">
+                    Please choose a valid file.
+                </div>
+            </div>
+            <div class="form-group">
+                <img id="selected-image" width="250" height="150" src="#" style="object-fit: cover;" />
+            </div>
+            <div class="form-group">
+                <div class="progress bg-secondary" style="width: 100%;">
+                    <div class="progress-bar bg-success" id="upload-progress" style="width: 0%;">0%</div>
+                </div>
+            </div><br>
+            <div class="form-group">
+                <button id="save-project" type="button" style="width: 150; height: 60px;" class="btn btn-light bg-light text-dark">Post Project</button>
+            </div>
+        </form>
+
+        <div id="result">
+        </div>
+    </div>
+</div>
+<!--Science Project Area Ends Here-->
+
+<!--After Science Project Area-->
+<hr>
+<br><br><br>
+<div class="text-center bg-light text-dark">
+    <h3>All New Projects</h3>
+</div>
+<hr><br><br>
+<div class="row container-fluid bg-3">
+    <div class="col-sm-12" id="projects"></div>
+</div>
+<br>
+<!--After Science Project Area Ends Here-->
+
+<!--Validation and uploading projects-->
+<script>
+    var validImagetypes = ["image/gif", "image/jpeg", "image/png"];
+
+    $("#selected-image").hide();
+
+    function previewImage(image_project) {
+
+        if (image_project.files && image_project.files[0]) {
+
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $("#selected-image").attr('src', e.target.result);
+                $("#selected-image").fadeIn();
+            }
+            reader.readAsDataURL(image_project.files[0]);
+        }
+    }
+
+    $("#main-image").change(function() {
+        previewImage(this);
+    });
+
+    $("#save-project").click(function() {
+
+        $("#main-desc").removeClass("is-invalid");
+        $("#main-image").removeClass("is-invalid");
+
+        var desc = $("#main-desc").val();
+        var picture = $("#main-image").prop("files")[0];
+
+        if (!desc) {
+            $("#main-desc").addClass("is-invalid");
+            return;
+        }
+        if (picture == null) {
+            $("#main-image").addClass("is-invalid");
+            return;
+        }
+
+        if ($.inArray(picture["type"], validImagetypes) < 0) {
+
+            $("#main-image").addClass("is-invalid");
+            return;
+        }
+
+        //***Upload and Save to Farebase Storage and Database***
+
+        var databaseRef = firebase.database().ref().child("Projects");
+
+        databaseRef.once("value").then(function(shapshot) {
+            var name = picture["name"];
+            var dateStr = new Date().getTime();
+            var fileCompleteName = name + "_" + dateStr;
+
+            var storageRef = firebase.storage().ref().child("Projects");
+            var blogStorageRef = storageRef.child(fileCompleteName);
+
+            var uploadTask = blogStorageRef.put(picture);
+
+            uploadTask.on(
+                "state_changed",
+
+                function progress(snapshot) {
+                    var percentage = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+
+                    $("#upload-progress").html(Math.round(percentage) + "%");
+                    $("#upload-progress").attr("style", "width:" + percentage + "%");
+                },
+                function error(err) {
+
+                },
+                function complete() {
+                    var user = firebase.auth().currentUser;
+                    var username;
+                    firebase.database().ref('Users/' + user.uid).once('value').then(function(snapshot) {
+                        var firstname = (snapshot.val() && snapshot.val().firstname);
+                        var surname = (snapshot.val() && snapshot.val().surname);
+                        username = firstname + " " + surname;
+                    });
+
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        var time = new Date();
+
+                        var projectData = {
+                            "image": downloadURL,
+                            "name": fileCompleteName,
+                            "desc": desc,
+                            "uid": user.uid,
+                            "counter": 5000 - counter,
+                            "username": username,
+                        };
+
+                        var ProjectDataToSave = JSON.parse(JSON.stringify(projectData));
+
+                        var newProjectRef = databaseRef.push();
+                        newProjectRef.set(ProjectDataToSave, function(err) {
+                            if (err) {
+                                $("#result").attr("class", "alert alert-danger");
+                                $("#result").html(err.message);
+                            } else {
+                                $("#result").attr("class", "alert alert-danger");
+                                $("#result").html("Project has been uploaded successfully");
+
+                                window.open("", "_self");
+                            }
+                            resetForm();
+                        })
+                    });
+                }
+            )
+        });
+        //***Upload and Save to Farebase Storage and Database***
+    })
+
+    function resetForm() {
+
+        $("#main-form")[0].reset();
+        //$("#selected-image")[0].fadeOut();
+        $("#upload-progress").eq(0).html("Completed");
+    }
+
+    //***Retrieve and Display Projects from Database***
+
+    var DataBaseProjects = firebase.database().ref().child("Projects").orderByChild("counter");
+
+    DataBaseProjects.on('value', function(projects) {
+        if (projects.exists) {
+            var projectsHtml = "";
+            projects.forEach(function(singleProject) {
+                counter = counter + 1;
+                projectsHtml += "<div class='jumbotron bg-light text-dark border border-dark'>";
+                projectsHtml += "<div> <img width='auto' height='auto' src='";
+                projectsHtml += singleProject.val().image;
+                projectsHtml += "'/> </div> <br>";
+
+                projectsHtml += "<div class='row'>";
+                projectsHtml += "<div class='col-sm-5'> <p style='color: grey;'>" +
+                    "Brainstormed by:" + singleProject.val().username +
+                    "</p></div>";
+                projectsHtml += "</div> <br>";
+
+                projectsHtml += "<div style='text-align: justify; color: black;'>";
+                projectsHtml += singleProject.val().desc;
+                projectsHtml += "</div> <br>";
+
+                projectsHtml += "</div>";
+            })
+            $("#projects").html(projectsHtml);
+        }
+    });
+
+    //***Retrieve and Display Projects from Database Ends Here***
+</script>
+<!--Validation and uploading projects Ends Here-->

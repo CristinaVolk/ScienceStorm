@@ -1,271 +1,80 @@
 <!DOCTYPE html>
 <html>
-        <head>
-                <title>Dashboard</title>
-                
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-                <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-                <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
-                <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js"></script>
-                <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-database.js"></script>
-                <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-storage.js"></script>
-            </head>
+<head>
+    <title>Dashboard</title>
+    <!-- STYLE CSS -->
+    <link rel="stylesheet" href="design_files/css/style.css">
+    <!-- MATERIAL DESIGN ICONIC FONT -->
+    <link rel="stylesheet" href="design_files/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <body class="h-100">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        <nav class="navbar navbar-expand-lg bg-dark text-white">
-            <div class="container-field">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a class="navbar-brand" style="color: whitesmoke; text-decoration-style: wavy;" href="#">
-                        Science App
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" style="color: whitesmoke; text-decoration-style: wavy;" href="#">
-                            <span style="color: white">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" style="color: whitesmoke; text-decoration-style: wavy;" href="#">
-                            <span style="color: white">My Progects</span>
-                        </a>
-                    </li>
-                </ul>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-storage.js"></script>
+</head>
+<script type="text/javascript" src="js/index.js"></script>
 
-       
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Options
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" id="dropdownMenuItem" href="#">Sign Out</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+<body class="h-100">
+    <nav class="navbar navbar-expand-lg bg-dark text-white" style="justify-content: center;">
+        <div class="container-field">
+            <div class="menu-container">
+                <div class="menu-item">
+                    <a href="">Science App</a>
                 </div>
-
+                <div class="menu-item">
+                    <a onclick="switchView('home.html')">Home</a>
                 </div>
+                <div class="menu-item">
+                    <a onclick="switchView('myProjects.html')">My projects</a>
+                </div>
+                <div class="menu-btn" id="btn-logout">Sign out!</div>
             </div>
-        </nav>
 
-        <div class="row h-100 bg-light">
+        </div>
+        </div>
+    </nav>
+    <div class="wrapper">
+        <div class="image-holder" style="position: fixed;">
+            <img src="/design_files/images/twins.jpg">
+        </div>
+        <div class="row h-100 bg-light" style="max-width: 750px;">
             <div class="col-lg-0 bg-secondary">
                 <ul class="nav flex-column">
 
                 </ul>
             </div>
 
-            <div class = "col-lg-12">
-                <div class="container" id="container">
-                    <!--Science Project Area-->
-                        <div class="jumbotron bg-dark">
-                            <script> var counter = 0; </script>
-                            <div class="text-center">
-                                <form id="main-form">
-                                    <div class="form-group">
-                                        <textarea type="text" rows="5" placeholder="describe your idea" class="form-control" id="main-desc"></textarea>
-                                        <div class="invalid-feedback">
-                                                Please write some description first.
-                                            </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="file" class="form-control" id="main-image"/>
-                                        <div class="invalid-feedback">
-                                            Please choose a valid file.
-                                        </div>
-                                    </div>
-                                    <div class="form-control">
-                                        <img id="selected-image" width="250" height="150" src="#"/>
-                                    </div>
-                                    <div class="form-group">
-                                    <div class="progress bg-secondary">
-                                        <div class="progress-bar bg-success" id="upload-progress" style="width: 0%;">0%</div>
-                                    </div>
-                                </div>
-                                <div class = "form-group">
-                                    <button id="save-project" type="button" style="width: 150; height: 60px;" class="btn btn-light bg-light text-dark">Project</button>
-                                </div>
-                                </form>
-
-                                <div id="result">
-
-
-                                </div>
-                            </div>            
-                        </div>
-                        <!--Science Project Area Ends Here-->
-
-                        <!--After Science Project Area-->
-                        <hr>
-                        <br><br><br>
-                        <div class="text-center bg-light text-dark">
-                            <h3>All New Projects</h3>
-                        </div>
-
-
-                        <hr>
-
-                        <br>
-                        <br>
-
-                        <div class="row container-fluid bg-3">
-                            <div class="col-sm-12" id="projects">
-
-                            </div>
-                        </div>
-
-                        <br>
-                        <!--After Science Project Area Ends Here-->
-
-
-                        <!--Validation and uploading projects-->
-                        <script>
-                            var validImagetypes = ["image/gif", "image/jpeg","image/png"];
-
-                            $("#selected-image").hide();
-
-                            function previewImage(image_blog){
-
-                                if(image_blog.files && image_blog.files[0]){
-
-                                    var reader = new FileReader();
-
-                                    reader.onload = function(e){
-                                        $("#selected-image").attr('src', e.target.result);
-                                        $("#selected-image").fadeIn();
-                                    }
-                                    reader.readAsDataURL(image_blog.files[0]);                                    
-                                }                                
-                            }
-
-                            $("#main-image").change(function(){
-                                previewImage(this);
-                            });
-
-                            $("#save-project").click(function(){
-
-                                $("#main-desc").removeClass("is-invalid");
-                                $("#main-image").removeClass("is-invalid");
-
-                                var desc = $("#main-desc").val();
-                                var picture = $("#main-image").prop("files")[0];
-
-                                if (desc){
-                                    $("#main-desc").addClass("is-invalid");
-                                    return;
-                                }
-                                if (picture == null)
-                                {
-                                    $("#main-image").addClass("is-invalid");
-                                    return;
-                                }
-
-                                if($.inArray(picture["type"], validImagetypes)<0){
-
-                                    $("#main-image").addClass("is-invalid");
-                                    return;
-                                }
-                                                //***Upload and Save to Farebase Storage and Database***
-                                var databaseRef = firebase.database().ref().child("Projects");
-                                
-                                databaseRef.once("value").then(function(shapshot){
-                                    var name = picture["name"];
-                                    var dateStr = new Date().getTime();
-                                    var fileCompleteName= name + "_" + dateStr;
-
-                                    var storageRef = firebase.storage().ref().child("Projects");
-                                    var blogStorageRef = storageRef.child(fileCompleteName);
-
-                                    var uploadTask = blogStorageRef.put(picture);
-
-                                    uploadTask.on("state_changed",
-                                        function progress(snapshot){
-                                            var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100);
-
-                                            $("#upload-progress").html(Math.round(percentage)+ "%");
-                                            $("#upload-progress").attr("style", "width:" + percentage + "%");
-                                        },
-                                        function error(err){
-
-                                        },
-                                        function complete(){
-                                            var user = firebase.auth().currentUser;
-                                            var username;
-                                            firebase.database().ref('Users/' + user.uid).once('value').then(function(snapshot){
-                                                var firstname = (snapshot.val() && snapshot.val().firstname);
-                                                var surname = (snapshot.val() && snapshot.val().surname);
-                                                username = firstname + " " + surname;
-                                            });
-
-                                            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
-                                                var time = new Date();
-                                                var Options = 
-                                                {
-                                                    weekday: "long",
-                                                    month: "long",
-                                                    day: "2-digit",
-                                                    year: "numeric"
-                                                };
-
-                                                var projectData = {
-                                                    "image": downloadURL,
-                                                    "name": fileCompleteName,
-                                                    "desc": desc,
-                                                    "uid": user.id,
-                                                    "name": username,
-                                                };
-
-                                                var ProjectDataToSave = JSON.parse(JSON.stringify(projectData));
-
-                                                var newProjectRef = databaseRef.push();
-                                                newProjectRef.set(ProjectDataToSave, function(err){
-                                                    if(err){
-                                                        $("#result").attr("class", "alert alert-danger");
-                                                        $("#result").html(err.message);
-                                                    } else {
-                                                        $("#result").attr("class", "alert alert-danger");
-                                                        $("#result").html("Projec has been uploaded successfully");
-
-                                                        window.open("", "_self");
-                                                    }
-                                                })
-                                            });
-                                        }
-                                    )
-                                });
-                                                            //***Upload and Save to Farebase Storage and Database***
-                            })
-
-
-                            function resetForm(){
-
-                                $("#main-form")[0].reset();
-                                $("#selected-image")[0].fadeOut();
-                                $("#upload-progress")[0].html("Completed");
-                            }
-
-                        </script>
-                        <!--Validation and uploading projects Ends Here-->
-                    </div>
-                </div>
-
+            <div class="col-lg-12">
+                <div class="container" id="container"></div>
             </div>
-            
-        
+        </div>
+    </div>
 
-        <script src="js/index.js"></script>
-        <script>
-            firebase.auth().onIdTokenChanged(function(user) 
-            {
-                if (!user)
-                {
-                    window.location.href = "login.html";
-                }
+    <script>
+        firebase.auth().onIdTokenChanged(function(user) {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', function(event) {
+            firebase.auth().signOut();
+        });
+
+        function switchView(view) {
+            $.get({
+                url: view,
+                cache: false,
+            }).then(function(data) {
+                $("#container").html(data);
             });
-        </script>
-    </body>
+        }
+    </script>
+</body>
+
 </html>
