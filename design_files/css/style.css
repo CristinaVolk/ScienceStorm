@@ -21,6 +21,10 @@ body {
     margin: 0;
 }
 
+.container {
+    margin-top: 30px;
+}
+
 input,
 textarea,
 select,
@@ -68,6 +72,11 @@ a:hover {
     justify-content: center;
     background-image: url('../images/scientific.jpg');
     background-attachment: fixed;
+}
+
+.image-holder {
+    position: fixed;
+    max-width: 650px;
 }
 
 .inner {
