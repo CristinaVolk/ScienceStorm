@@ -1,3 +1,7 @@
 
+<<<<<<< HEAD
 *.json
 node_modules
+=======
+*.json
+>>>>>>> master

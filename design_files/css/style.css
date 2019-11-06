@@ -65,9 +65,12 @@ a:hover {
     background-repeat: no-repeat;
     display: flex;
     align-items: center;
+<<<<<<< HEAD
     justify-content: center;
     background-image: url('../images/scientific.jpg');
     background-attachment: fixed;
+=======
+>>>>>>> master
 }
 
 .inner {
@@ -183,12 +186,15 @@ select option[value=""][disabled] {
     font-size: 15px;
     color: #fff;
 }
+<<<<<<< HEAD
 
 .alert alert-danger {
     color: white;
     background-color: #498F77;
     border-color: #f5c6cb;
 }
+=======
+>>>>>>> master
 
 button {
     border: none;
