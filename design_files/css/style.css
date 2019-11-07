@@ -46,6 +46,34 @@ img {
     max-width: 100%;
 }
 
+#image {
+    display: flex;
+    justify-content: center;
+}
+
+#img-main {
+    border-style: solid;
+    border-radius: 15px;
+    position: fixed;
+    margin-top: 30px;
+}
+
+#projects-wrapper {
+    max-width: 650px;
+    border-radius: 15px;
+    margin-top: 30px;
+}
+
+#upload-progress {
+    margin-left: 5px;
+    width: 0%;
+}
+
+#save-project {
+    width: 150;
+    height: 60px;
+}
+
 ul {
     padding-left: 0;
     margin-bottom: 0;
