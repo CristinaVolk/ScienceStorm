@@ -74,6 +74,11 @@ img {
     height: 60px;
 }
 
+#result {
+    background-color: #64CC7D;
+    color: #263329;
+}
+
 ul {
     padding-left: 0;
     margin-bottom: 0;
