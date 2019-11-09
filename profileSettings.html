@@ -89,7 +89,6 @@
 
             firebase.database().ref('/Users/' + userID).once('value').then(function(snapshot) {
                 var firstNAME = (snapshot.val() && snapshot.val().firstname) || 'Anonymous';
-                console.log(firstNAME + 'kk');
                 var userDataHtml = "";
                 userDataHtml += "<div class='jumbotron bg-light text-dark border border-dark'  style='justify-items: center;'>";
                 userDataHtml += "<div width='auto' height='auto'>";

@@ -108,8 +108,6 @@ $("#btn-set").click(function() {
     var userID = firebase.auth().currentUser.uid;
     var usersRef = rootRef.child(userID);
 
-    console.log(usersRef + ' btn-set');
-
     if (firstname != "" && surname != "" && country != "" && phone != "" && gender != "" && address != "") {
 
         var userData = {
@@ -135,33 +133,9 @@ $("#btn-set").click(function() {
             } else {
                 console.log('Success!');
                 window.location.href = "profileSettings.html";
-                // window.location.href = "dashboard.html";
             }
         });
     } else {
         window.alert("Form is not complete. Please fill out the fields");
     }
 });
-
-$("#btn-update").click(function() {
-
-    var firstname = $("#firstname").val();
-    var surname = $("#surname").val();
-
-    var user = firebase.auth().currentUser;
-    var userID = firebase.auth().currentUser.uid;
-    if (user) {
-        firebase.database().ref('Users/' + userID).set({
-            firstname: firstname
-        }, function(error) {
-            if (error) {
-                console.log('An error happened.')
-            } else {
-                console.log('Success!')
-            }
-        })
-    } else {
-        alert('An error happened. User does not exist');
-    }
-
-})
