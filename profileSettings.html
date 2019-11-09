@@ -25,17 +25,17 @@
 
 <body>
     <div class="wrapper" style="background-image: url('design_files/images/scientific.jpg');">
-
+        <div id="go-main-page-link">
+            <a style="color: black;" href="dashboard.html">Go to Main Menu Page</a>
+        </div>
 
         <div class="inner">
-            <div class="image-holder">
-                <img src="/design_files/images/asettings.jpg">
-            </div>
+
             <form action="">
                 <h3>Profile Settigs</h3>
                 <div class="form-group">
-                    <input id="firstname" type="text" placeholder="Enter your Firstname" class="form-control">
-                    <input id="surname" type="text" placeholder="Enter your Surname" class="form-control">
+                    <input id="firstname" type="text" placeholder="Firstname" class="form-control">
+                    <input id="surname" type="text" placeholder="Surname" class="form-control">
                 </div>
                 <div class="form-wrapper">
                     <select class="form-control" id="country" name="">
@@ -67,34 +67,45 @@
 
 
                 <div class="form-group container-login100-form-btn">
-                    <button id="btn-update" type="button">
+                    <button id="btn-set" type="button">
                             Update
                             <i class="zmdi zmdi-arrow-right"></i>
                         </button>
                 </div>
 
             </form>
+
+            <div id="user-data">
+
+            </div>
         </div>
     </div>
 
     <script src="js/index.js"></script>
     <script>
         firebase.auth().onIdTokenChanged(function(user) {
-            if (user) {
-                var userID = firebase.auth().currentUser.uid;
 
-                firebase.database().ref('Users/' + userID).once('value').then(function(snapshot) {
+            var userID = firebase.auth().currentUser.uid;
 
-                    if (snapshot.val()) {
+            firebase.database().ref('/Users/' + userID).once('value').then(function(snapshot) {
+                var firstNAME = (snapshot.val() && snapshot.val().firstname) || 'Anonymous';
+                console.log(firstNAME + 'kk');
+                var userDataHtml = "";
+                userDataHtml += "<div class='jumbotron bg-light text-dark border border-dark'  style='justify-items: center;'>";
+                userDataHtml += "<div width='auto' height='auto'>";
+                userDataHtml += "<p id='first' style='color: grey;'>";
+                userDataHtml += snapshot.val().firstname + "<br>";
+                userDataHtml += snapshot.val().phone + "<br>";
+                userDataHtml += snapshot.val().gender + "<br>";
+                userDataHtml += snapshot.val().address + "<br>";
+                userDataHtml += "</p></div> <br>";
 
-                        window.location.href = "dashboard.html";
+                document.getElementById('user-data').innerHTML = userDataHtml;
 
-                    }
-                })
-
-            }
-        });
+            })
+        })
     </script>
+
 
 </body>
 
